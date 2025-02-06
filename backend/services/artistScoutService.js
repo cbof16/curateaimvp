@@ -1,20 +1,13 @@
 const axios = require('axios');
 const { Client } = require('pg');
-require('dotenv').config();
+const dotenv = require('dotenv');
+dotenv.config();
 
 const { URL } = require('url');
 
-if (!process.env.DATABASE_URL) {
-  throw new Error('DATABASE_URL environment variable is not defined');
-}
-
-const dbUrl = new URL(process.env.DATABASE_URL);
 const client = new Client({
-  user: dbUrl.username,
-  host: dbUrl.hostname,
-  database: dbUrl.pathname.split('/')[1],
-  password: dbUrl.password,
-  port: dbUrl.port,
+  connectionString: process.env.DATABASE_URL,
+  
   ssl: {
     rejectUnauthorized: false
   }
