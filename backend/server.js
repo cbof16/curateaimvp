@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config({ path: './backend/.env' });
+const cron = require('node-cron');
+const socialBotService = require('./services/socialBotService');
 
 const app = express();
 
@@ -12,6 +14,16 @@ app.use('/api/auctions', auctionsRouter);
 app.use('/api/artists', artistRoutes);
 app.use('/api/venice-ai', veniceAIRoute);
 app.use('/api/pricing', pricingRouter);
+
+cron.schedule('0 * * * *', async () => {
+  // Example cron job that runs every hour
+  const artworkName = 'Example Artwork';
+  const artist = 'Example Artist';
+  const price = '1.5';
+  const message = socialBotService.generatePromotionalMessage(artworkName, artist, price);
+  await socialBotService.postTweet(message);
+  console.log('Promotion posted successfully');
+});
 
 
 // Health endpoint
