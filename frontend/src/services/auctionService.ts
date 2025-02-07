@@ -1,28 +1,28 @@
 import axios from 'axios';
 
-const createAuction = async (auctionData: any) => {
-  const response = await axios.post('/api/auctions/create', auctionData);
+const API_BASE_URL = 'http://localhost:3000/api';
+
+export const createAuction = async (auctionData: any) => {
+  const response = await axios.post(`${API_BASE_URL}/auctions`, auctionData);
   return response.data;
 };
 
-const getAuctionDetails = async (auctionId: any) => {
-  const response = await axios.get(`/api/auctions/${auctionId}`);
+export const getAuctionDetails = async (auctionId: string) => {
+  const response = await axios.get(`${API_BASE_URL}/auctions/${auctionId}`);
   return response.data;
 };
 
-const getCurrentPrice = async (auctionId: any) => {
-  const response = await axios.get(`/api/auctions/${auctionId}/price`);
-  return response.data.price;
-};
-
-const buyAuction = async (auctionId: any, buyerAddress: any) => {
-  const response = await axios.post(`/api/auctions/${auctionId}/buy`, { buyerAddress });
+export const getCurrentPrice = async (auctionId: string) => {
+  const response = await axios.get(`${API_BASE_URL}/auctions/${auctionId}/price`);
   return response.data;
 };
 
-const cancelAuction = async (auctionId: any) => {
-  const response = await axios.delete(`/api/auctions/${auctionId}/cancel`);
+export const buyAuction = async (auctionId: string, buyerData: any) => {
+  const response = await axios.post(`${API_BASE_URL}/auctions/${auctionId}/buy`, buyerData);
   return response.data;
 };
 
-export { createAuction, getAuctionDetails, getCurrentPrice, buyAuction, cancelAuction };
+export const cancelAuction = async (auctionId: string) => {
+  const response = await axios.post(`${API_BASE_URL}/auctions/${auctionId}/cancel`);
+  return response.data;
+};

@@ -15,7 +15,18 @@ exports.createAuction = async (nftAddress, tokenId, startingPrice, reservePrice,
 
 exports.getAuctionDetails = async (auctionId) => {
   const auction = new ethers.Contract(auctionId, abi, provider);
-  const details = await auction.getAuctionDetails();
+  const details = {
+    nftAddress: await auction.nft(),
+    tokenId: await auction.tokenId(),
+    startingPrice: await auction.startingPrice(),
+    reservePrice: await auction.reservePrice(),
+    priceDropInterval: await auction.priceDropInterval(),
+    priceDropAmount: await auction.priceDropAmount(),
+    auctionDuration: await auction.auctionDuration(),
+    artist: await auction.artist(),
+    auctionStartTime: await auction.auctionStartTime(),
+    auctionEnded: await auction.auctionEnded(),
+  };
   return details;
 };
 
@@ -27,9 +38,21 @@ exports.getCurrentPrice = async (auctionId) => {
 
 exports.buyAuction = async (auctionId, buyerAddress) => {
   const auction = new ethers.Contract(auctionId, abi, wallet);
-  const tx = await auction.buy({ from: buyerAddress, value: ethers.utils.parseEther('1.0') });
-  const receipt = await tx.wait();
-  return receipt;
+  try {
+  try {
+    const currentPrice = await auction.getCurrentPrice();
+    console.log('Current Price:', currentPrice.toString());
+    const tx = await auction.buy({ value: ethers.utils.parseEther('1.0'), gasLimit: 3000000 });
+    const receipt = await tx.wait();
+    return receipt;
+  } catch (error) {
+    console.error('Error buying auction:', error);
+    throw error;
+  }
+  } catch (error) {
+    console.error('Error buying auction:', error);
+    throw error;
+  }
 };
 
 exports.cancelAuction = async (auctionId) => {

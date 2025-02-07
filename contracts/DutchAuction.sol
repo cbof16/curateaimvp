@@ -28,6 +28,8 @@ contract DutchAuction is ReentrancyGuard {
 
     event AuctionEnded(address indexed buyer, uint256 finalPrice);
 
+    event DebugLog(string message, uint256 value);
+
     constructor(
         address _nft,
         uint256 _tokenId,
@@ -61,6 +63,16 @@ contract DutchAuction is ReentrancyGuard {
         );
     }
 
+    function cancelAuction() external {
+        require(msg.sender == seller, "Only the seller can cancel the auction");
+        require(!auctionEnded, "Auction already ended");
+
+        auctionEnded = true;
+        nft.transferFrom(seller, seller, tokenId);
+
+        emit AuctionEnded(address(0), 0);
+    }
+
     function getCurrentPrice() public view returns (uint256) {
         if (block.timestamp >= auctionStartTime + auctionDuration) {
             return reservePrice;
@@ -74,12 +86,30 @@ contract DutchAuction is ReentrancyGuard {
     }
 
     function buy() external payable nonReentrant {
+        emit DebugLog("Transferring NFT", tokenId);
         require(!auctionEnded, "Auction already ended");
         uint256 currentPrice = getCurrentPrice();
         require(msg.value >= currentPrice, "Insufficient funds to buy");
+        emit DebugLog("Current Price", currentPrice);
+        emit DebugLog("Sent Value", msg.value);
+        emit DebugLog("Auction Ended", auctionEnded ? 1 : 0);
+        emit DebugLog("Auction Start Time", auctionStartTime);
+        emit DebugLog("Block Timestamp", block.timestamp);
+        emit DebugLog("Auction Duration", auctionDuration);
+        emit DebugLog("Reserve Price", reservePrice);
+        emit DebugLog("Starting Price", startingPrice);
+        emit DebugLog("Price Drop Interval", priceDropInterval);
+        emit DebugLog("Price Drop Amount", priceDropAmount);
 
         auctionEnded = true;
+        emit DebugLog("Transferring NFT", tokenId);
+        emit DebugLog("Seller", uint256(uint160(seller)));
+        emit DebugLog("Buyer", uint256(uint160(msg.sender)));
+        emit DebugLog("NFT Owner", uint256(uint160(nft.ownerOf(tokenId))));
+        emit DebugLog("NFT Approved", uint256(uint160(nft.getApproved(tokenId))));
         nft.transferFrom(seller, msg.sender, tokenId);
+        emit DebugLog("NFT Transferred", tokenId);
+        emit DebugLog("NFT Transferred", tokenId);
 
         uint256 artistRoyalty = (msg.value * 10) / 100;
         uint256 sellerAmount = msg.value - artistRoyalty;

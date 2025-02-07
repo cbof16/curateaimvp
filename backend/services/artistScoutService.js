@@ -2,14 +2,14 @@ const axios = require('axios');
 const { Client } = require('pg');
 const dotenv = require('dotenv');
 dotenv.config();
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 const { URL } = require('url');
+console.log('DATABASE_URL:', process.env.DATABASE_URL);
 
 const client = new Client({
   connectionString: process.env.DATABASE_URL,
-  
   ssl: {
-    require: true,
     rejectUnauthorized: false
   }
 });
@@ -29,11 +29,17 @@ const fetchTrendingTweets = async () => {
         'user.fields': 'username,profile_image_url,public_metrics'
       }
     });
-
     return response.data;
   } catch (error) {
-    console.error('Error fetching tweets:', error);
-    throw error;
+    if (error.response && error.response.status === 429) {
+      console.error('Rate limit exceeded, waiting 5 to 7 minutes before retrying...');
+      const delay = (Math.random() * 2 + 5) * 60000;
+      await sleep(delay);
+      return fetchTrendingTweets();
+    } else {
+      console.error('Error fetching tweets:', error.message);
+      throw error;
+    }
   }
 };
 
@@ -55,7 +61,7 @@ const storeArtistData = async (artistData) => {
 
   const values = [
     artistData.username,
-    artistData.profile_link,
+    JSON.stringify({ profile_link: artistData.profile_link }),
     artistData.engagement_score,
     artistData.hype_score,
     artistData.rank
@@ -73,12 +79,13 @@ const scoutArtists = async () => {
   try {
     const tweets = await fetchTrendingTweets();
     const artists = tweets.includes.users.map(user => {
+      // The hypeScore is calculated here; for now we keep a placeholder value (0) for hype_score.
       const hypeScore = calculateHypeScore(user.public_metrics);
       return {
         username: user.username,
         profile_link: `https://twitter.com/${user.username}`,
-        engagement_score: user.public_metrics.followers_count,
-        hype_score,
+        engagement_score: user.public_metrics.followers_count || 0,
+        hype_score: 0,
         rank: 0 // Placeholder for rank calculation logic
       };
     });
@@ -94,5 +101,4 @@ const scoutArtists = async () => {
     client.end();
   }
 };
-
 scoutArtists();
