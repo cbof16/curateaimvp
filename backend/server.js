@@ -3,6 +3,7 @@ const cors = require('cors');
 require('dotenv').config({ path: './backend/.env' });
 const cron = require('node-cron');
 const socialBotService = require('./services/socialBotService');
+const { swaggerUi, specs } = require('./config/swagger');
 
 const app = express();
 
@@ -15,6 +16,8 @@ app.use('/api/artists', artistRoutes);
 app.use('/api/venice-ai', veniceAIRoute);
 app.use('/api/pricing', pricingRouter);
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+
 cron.schedule('0 * * * *', async () => {
   // Example cron job that runs every hour
   const artworkName = 'Example Artwork';
@@ -24,7 +27,6 @@ cron.schedule('0 * * * *', async () => {
   await socialBotService.postTweet(message);
   console.log('Promotion posted successfully');
 });
-
 
 // Health endpoint
 app.get('/api/health', (req, res) => {
