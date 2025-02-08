@@ -1,0 +1,61 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Logs
+logs/
+*.log
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Dependency directories
+jspm_packages/
+bower_components/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Build output
+dist/
+build/
+out/
+.cache/
+
+# IDEs and editors
+.vscode/
+.idea/
+.DS_Store
+
+# Miscellaneous
+*.swp
+*.swo
+*.bak
+*.tmp
+*.temp
+*.swp
+*.swo
+*.bak
+*.tmp
+*.temp
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# TypeScript
+*.tsbuildinfo
+
+# Solidity
+cache/
+artifacts/
+
+# Hardhat files
+hardhat.config.ts
+hardhat.config.js
