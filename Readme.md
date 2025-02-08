@@ -208,7 +208,7 @@ This project is licensed under the MIT License.
 
 ## Contact
 
-For inquiries or contributions, please contact [your-email@example.com] or join our Discord community.
+For inquiries or contributions, please contact [cbof16@gmail.com] or join our Discord community.
 
 ---
 

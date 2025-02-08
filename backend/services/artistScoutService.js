@@ -61,7 +61,7 @@ const storeArtistData = async (artistData) => {
 
   const values = [
     artistData.username,
-    JSON.stringify({ profile_link: artistData.profile_link }),
+    { profile_link: artistData.profile_link },
     artistData.engagement_score,
     artistData.hype_score,
     artistData.rank
