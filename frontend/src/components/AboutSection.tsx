@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   BrainCircuit, 
   Sparkles, 
@@ -9,6 +9,7 @@ import {
   Users,
   TrendingUp
 } from 'lucide-react';
+import WaitlistModal from './WaitlistModal';
 
 interface FeatureCardProps {
   icon: React.ElementType;
@@ -33,6 +34,8 @@ const FeatureCard = ({ icon: Icon, title, description }: FeatureCardProps) => (
 );
 
 const AboutSection = () => {
+  const [isWaitlistModalOpen, setIsWaitlistModalOpen] = useState(false);
+
   const features = [
     {
       icon: BrainCircuit,
@@ -144,12 +147,20 @@ const AboutSection = () => {
             Be part of the future of digital art. Join our community of artists, collectors, and 
             innovators shaping the next generation of creative expression.
           </p>
-          <button className="px-8 py-4 bg-gradient-to-r from-red-600 to-red-500 rounded-lg font-semibold hover:from-red-500 hover:to-red-400 transform hover:scale-105 transition-all duration-200 shadow-[0_0_15px_rgba(239,68,68,0.5)] hover:shadow-[0_0_25px_rgba(239,68,68,0.7)] flex items-center space-x-2 mx-auto">
+          <button 
+            onClick={() => setIsWaitlistModalOpen(true)}
+            className="px-8 py-4 bg-gradient-to-r from-red-600 to-red-500 rounded-lg font-semibold hover:from-red-500 hover:to-red-400 transform hover:scale-105 transition-all duration-200 shadow-[0_0_15px_rgba(239,68,68,0.5)] hover:shadow-[0_0_25px_rgba(239,68,68,0.7)] flex items-center space-x-2 mx-auto"
+          >
             <Rocket className="w-5 h-5" />
-            <span>Get Started Now</span>
+            <span>Join the Waitlist</span>
           </button>
         </div>
       </div>
+
+      <WaitlistModal 
+        isOpen={isWaitlistModalOpen}
+        onClose={() => setIsWaitlistModalOpen(false)}
+      />
     </section>
   );
 };

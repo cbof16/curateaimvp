@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import { BrainCircuit, Menu, X, Gavel, Home, Users, Info } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { BrainCircuit, Menu, X, Gavel, Home, Users, Info, History, Settings } from 'lucide-react';
+import WalletConnectButton from './WalletConnectButton';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -13,10 +16,15 @@ const Header = () => {
   };
 
   const navItems = [
-    { name: 'Home', icon: Home, action: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
-    { name: 'Auctions', icon: Gavel, action: () => scrollToSection('auctions') },
+    { name: 'Home', icon: Home, action: () => navigate('/') },
+    { name: 'Auctions', icon: Gavel, action: () => navigate('/auctions') },
     { name: 'Artists', icon: Users, action: () => scrollToSection('trending-artists') },
     { name: 'About', icon: Info, action: () => scrollToSection('about') }
+  ];
+
+  const profileItems = [
+    { name: 'Transactions', icon: History, path: '/transactions' },
+    { name: 'Settings', icon: Settings, path: '/settings' }
   ];
 
   return (
@@ -24,12 +32,12 @@ const Header = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           {/* Logo */}
-          <div className="flex items-center space-x-2">
+          <Link to="/" className="flex items-center space-x-2">
             <BrainCircuit className="w-8 h-8 text-red-500 animate-pulse" />
             <span className="text-2xl font-bold bg-gradient-to-r from-red-500 to-red-700 text-transparent bg-clip-text">
-              CurateAI
+              TheCurateAI
             </span>
-          </div>
+          </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
@@ -47,13 +55,23 @@ const Header = () => {
               </button>
             ))}
             
-            <button
-              onClick={() => scrollToSection('auctions')}
-              className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 rounded-lg font-semibold hover:from-red-500 hover:to-red-400 transform hover:scale-105 transition-all duration-200 shadow-[0_0_15px_rgba(239,68,68,0.5)] hover:shadow-[0_0_25px_rgba(239,68,68,0.7)] flex items-center space-x-2"
-            >
-              <Gavel className="w-4 h-4" />
-              <span>Start Bidding</span>
-            </button>
+            <div className="relative group">
+              <WalletConnectButton />
+              
+              {/* Profile Dropdown */}
+              <div className="absolute right-0 mt-2 w-48 bg-black/90 border border-red-500/20 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 backdrop-blur-sm">
+                {profileItems.map((item) => (
+                  <Link
+                    key={item.name}
+                    to={item.path}
+                    className="flex items-center space-x-2 px-4 py-2 text-gray-300 hover:text-red-500 hover:bg-red-500/10 transition-colors"
+                  >
+                    <item.icon className="w-4 h-4" />
+                    <span>{item.name}</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
           </nav>
 
           {/* Mobile Menu Button */}
@@ -79,13 +97,19 @@ const Header = () => {
                   <span>{item.name}</span>
                 </button>
               ))}
-              <button
-                onClick={() => scrollToSection('auctions')}
-                className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 rounded-lg font-semibold hover:from-red-500 hover:to-red-400 transition-all duration-200 flex items-center justify-center space-x-2"
-              >
-                <Gavel className="w-4 h-4" />
-                <span>Start Bidding</span>
-              </button>
+              {profileItems.map((item) => (
+                <Link
+                  key={item.name}
+                  to={item.path}
+                  className="text-gray-300 hover:text-red-500 transition-colors duration-200 flex items-center space-x-2 px-2 py-1"
+                >
+                  <item.icon className="w-4 h-4" />
+                  <span>{item.name}</span>
+                </Link>
+              ))}
+              <div className="pt-2">
+                <WalletConnectButton />
+              </div>
             </nav>
           </div>
         )}
