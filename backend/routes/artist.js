@@ -12,6 +12,7 @@ dbClient.connect();
 router.get('/rank', async (req, res) => {
   const query = 'SELECT * FROM artists ORDER BY rank ASC';
   const result = await dbClient.query(query);
+  console.log(result.rows);
   res.json(result.rows);
 });
 
