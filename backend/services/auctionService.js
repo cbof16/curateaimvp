@@ -3,7 +3,7 @@ const ethers = require('ethers');
 const { abi, bytecode } = require('../../artifacts/contracts/DutchAuction.sol/DutchAuction.json');
 
 const provider = new ethers.providers.JsonRpcProvider('https://api.avax-test.network/ext/bc/C/rpc');
-console.log('PRIVATE_KEY:', process.env.PRIVATE_KEY);
+// console.log('PRIVATE_KEY:', process.env.PRIVATE_KEY);
 const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
 exports.createAuction = async (nftAddress, tokenId, startingPrice, reservePrice, priceDropInterval, priceDropAmount, auctionDuration, artist) => {

@@ -1,28 +1,14 @@
-import axios from 'axios';
+import { API_BASE_URL } from '../config/api';
 
-const API_BASE_URL = 'http://localhost:3000/api';
-
-export const createAuction = async (auctionData: any) => {
-  const response = await axios.post(`${API_BASE_URL}/auctions`, auctionData);
-  return response.data;
-};
-
-export const getAuctionDetails = async (auctionId: string) => {
-  const response = await axios.get(`${API_BASE_URL}/auctions/${auctionId}`);
-  return response.data;
-};
-
-export const getCurrentPrice = async (auctionId: string) => {
-  const response = await axios.get(`${API_BASE_URL}/auctions/${auctionId}/price`);
-  return response.data;
-};
-
-export const buyAuction = async (auctionId: string, buyerData: any) => {
-  const response = await axios.post(`${API_BASE_URL}/auctions/${auctionId}/buy`, buyerData);
-  return response.data;
-};
-
-export const cancelAuction = async (auctionId: string) => {
-  const response = await axios.post(`${API_BASE_URL}/auctions/${auctionId}/cancel`);
-  return response.data;
-};
+export async function fetchAuctions(): Promise<any> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/auctions`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch auctions');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching auctions:', error);
+    throw error;
+  }
+}

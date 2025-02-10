@@ -6,9 +6,13 @@ import HeroSection from './components/HeroSection';
 import LoadingCard from './components/LoadingCard';
 import AboutSection from './components/AboutSection';
 import { useVeniceArt } from './hooks/useVeniceArt';
+import { fetchAuctions } from './services/auctionService';
 
 function App() {
   const { artworks, loading, error, isUsingDemoData } = useVeniceArt();
+  React.useEffect(() => {
+    fetchAuctions().then(data => console.log('Fetched auctions:', data));
+  }, []);
 
   const renderContent = () => {
     if (loading) {
