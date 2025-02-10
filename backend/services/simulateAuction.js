@@ -15,7 +15,7 @@ async function simulateAuction() {
 
     // Define the signer
     const provider = new ethers.providers.JsonRpcProvider('https://avalanche-fuji.infura.io/v3/08781009249246db92c9c8c4eed2fe17');
-    const signer = new ethers.Wallet('5f3a67dd8a5afbf29f1e64b18375fa696428eb959130b7bb76751ef9e2d1c01c', provider);
+    const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
     // Define the NFT contract
     const nftContract = new ethers.Contract(nftAddress, [
@@ -54,7 +54,7 @@ async function simulateAuction() {
     }
 
     // Simulate buying the auction with a different signer
-    const buyerPrivateKey = 'd6861a053dd8271cb1f291845c836a55f3c961236ef32b5b8d83f73205c7b418'; // Replace with actual private key
+    const buyerPrivateKey = process.env.BUYER_KEY; // Replace with actual private key
     const buyerWallet = new ethers.Wallet(buyerPrivateKey, provider);
     const buyerSigner = buyerWallet.connect(provider);
     const buyerAddress = '0xFeA68598eEAd1Ae974A0Da5bcFAc197e9c165fE1';
